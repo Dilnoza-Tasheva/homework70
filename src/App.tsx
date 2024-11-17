@@ -10,7 +10,7 @@ const App = () => (
     <header>
       <ToolBar/>
     </header>
-    <main>
+    <main className="container mt-4">
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="/newContact" element={<NewContact/>}/>
