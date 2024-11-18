@@ -14,7 +14,7 @@ const App = () => (
       <Routes>
         <Route path="/" element={<Home/>}/>
         <Route path="/newContact" element={<NewContact/>}/>
-        <Route path="/editContact" element={<EditContact/>}/>
+        <Route path="/editContact/:id" element={<EditContact/>}/>
         <Route path="*" element={<h3>Not found</h3>}/>
       </Routes>
     </main>

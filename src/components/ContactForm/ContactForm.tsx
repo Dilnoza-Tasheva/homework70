@@ -88,15 +88,18 @@ const ContactForm: React.FC<Props> = ({addNewContact, existingContact = initialS
       </div>
 
       <div className="form-group mb-2">
-        <label htmlFor="picture">Picture: </label>
+        <label htmlFor="pictureUrl">Picture: </label>
         <input
           type="text"
           onChange={changeContact}
           value={newContact.pictureUrl}
-          id="picture"
-          name="picture"
+          id="pictureUrl"
+          name="pictureUrl"
           className="form-control"
         />
+        {newContact.pictureUrl && (
+          <img src={newContact.pictureUrl} alt="Preview" width="100" height="100"/>
+        )}
       </div>
 
       <div className="d-flex">
