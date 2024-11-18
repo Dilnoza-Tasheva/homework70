@@ -2,39 +2,54 @@ import ContactForm from '../../components/ContactForm/ContactForm.tsx';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { selectFetchContactsLoading, selectOneContact } from '../../store/slices/ContactSlice.ts';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { editContact, getOneContactById } from '../../store/thunks/contactsThunk.ts';
 import { IContactMutation } from '../../types';
+import Spinner from '../../components/UI/Spinner/Spinner.tsx';
 
 
 const EditContact = () => {
   const {contactId} = useParams<{contactId: string}>();
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const contact = useAppSelector(selectOneContact);
   const isLoading = useAppSelector(selectFetchContactsLoading);
 
-  useEffect(() => {
+  const getContactById = useCallback(async() => {
     if (contactId) {
-      dispatch(getOneContactById(contactId));
+      await dispatch(getOneContactById(contactId));
     }
-  },[dispatch, contactId]);
+  }, [contactId]);
 
-  const updateContact = (updatedContact: IContactMutation) => {
+  useEffect(() => {
+    void getContactById();
+  },[getContactById]);
+
+  const updateContact = async (updatedContact: IContactMutation) => {
     if (contactId) {
-      dispatch(editContact({contactId, contact: updatedContact}));
-      naviagte('/')
+      await dispatch(editContact({contactId, contact: updatedContact}));
+      navigate('/');
     }
   };
 
-  if (isLoading || !contact) {
-    return <p>Loading</p>
-  }
-
   return (
     <div>
-      <ContactForm addNewContact={updateContact} existingContact={contact} isEdit/>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <>
+          {contact ? (
+            <ContactForm
+              addNewContact={updateContact}
+              existingContact={contact}
+              isEdit
+            />
+          ) : (
+            navigate('/')
+          )}
+        </>
+      )}
     </div>
   );
 };

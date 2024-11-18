@@ -1,9 +1,10 @@
 import { useAppDispatch, useAppSelector } from '../../app/hooks.ts';
 import { selectContacts, selectFetchContactsLoading } from '../../store/slices/ContactSlice.ts';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { deleteOneContact, fetchAllContacts } from '../../store/thunks/contactsThunk.ts';
 import { useNavigate } from 'react-router-dom';
 import Modal from '../../components/UI/Modal/Modal.tsx';
+import Spinner from '../../components/UI/Spinner/Spinner.tsx';
 
 
 const Home = () => {
@@ -13,9 +14,13 @@ const Home = () => {
   const isFetchLoading = useAppSelector(selectFetchContactsLoading);
   const [selectedContact, setSelectedContact] = useState<{ id: string; name: string; phone?: string; email?: string; pictureUrl?: string } | null>(null);
 
+  const fetchContacts = useCallback(async() => {
+    await dispatch(fetchAllContacts());
+  },[]);
+
   useEffect(() => {
-    dispatch(fetchAllContacts());
-  }, [dispatch]);
+    void fetchContacts();
+  }, [fetchContacts]);
 
   const deleteContact = async(contactId: string) => {
     await dispatch(deleteOneContact(contactId));
@@ -33,7 +38,7 @@ const Home = () => {
     <div>
       <h3>Contacts</h3>
       {isFetchLoading ? (
-        <p>Loading</p>
+        <Spinner/>
       ) : (
         <ul className="list-group">
           {contacts.map((contact) => (

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { IContactMutation } from '../../types';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   addNewContact: (contact: IContactMutation) => void;
@@ -18,6 +19,7 @@ const initialStateForm = {
 
 const ContactForm: React.FC<Props> = ({addNewContact, existingContact = initialStateForm, isEdit = false}) => {
   const [newContact, setNewContact] = useState<IContactMutation>(existingContact);
+  const navigate = useNavigate();
 
   const changeContact = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setNewContact((prevState) => {
@@ -48,9 +50,13 @@ const ContactForm: React.FC<Props> = ({addNewContact, existingContact = initialS
     }
   };
 
+  const returnToMainPage = () => {
+    navigate('/');
+  }
+
   return (
     <form onSubmit={onSubmit}>
-      <h3>Add new Contact</h3>
+      <h3>{isEdit ? 'Edit' : 'Add new'} contact</h3>
       <div className="form-group mb-2">
         <label htmlFor="name">Name: </label>
         <input
@@ -102,9 +108,9 @@ const ContactForm: React.FC<Props> = ({addNewContact, existingContact = initialS
         )}
       </div>
 
-      <div className="d-flex">
-        <button className="btn btn-success">Save</button>
-        <button className="btn btn-danger">Back</button>
+      <div className="d-flex gap-2">
+        <button className="btn btn-success" type="submit">Save</button>
+        <button className="btn btn-danger" onClick={returnToMainPage}>Back</button>
       </div>
     </form>
   );
