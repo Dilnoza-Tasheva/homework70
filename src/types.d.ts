@@ -7,3 +7,7 @@ export interface IContact {
 }
 
 export type IContactMutation = Omit<IContact, 'id'>
+
+export interface ContactsList {
+  [id: string]: IContactMutation
+}
